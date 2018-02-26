@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.2'
+
         classpath 'com.android.tools.build:gradle:3.0.1'
 
         // Google Services plugin
@@ -19,6 +19,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        google()
     }
 }
 
