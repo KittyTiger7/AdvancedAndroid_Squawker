@@ -23,6 +23,8 @@ public class SquawkerFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
+        Log.d("onMessageReceived", "Received message!");
+
         if (remoteMessage != null) {
 
             Map<String, String> data = remoteMessage.getData();
