@@ -17,9 +17,11 @@ package android.example.com.squawker.following;
 
 import android.content.SharedPreferences;
 import android.example.com.squawker.R;
-import android.example.com.squawker.provider.SquawkContract;
 import android.os.Bundle;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.SwitchPreferenceCompat;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -31,9 +33,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 public class FollowingPreferenceFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final static String LOG_TAG = FollowingPreferenceFragment.class.getSimpleName();
-
-    SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
-    SharedPreferences mPreferences;
 
 
     @Override
@@ -52,43 +51,17 @@ public class FollowingPreferenceFragment extends PreferenceFragmentCompat implem
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-        if (!sharedPreferences.getBoolean(key, false)) {
-            switch (sharedPreferences.getInt(key, 0)) {
-                case 0:
-                    FirebaseMessaging.getInstance().subscribeToTopic(SquawkContract.ASSER_KEY);
-                    break;
-                case 1:
-                    FirebaseMessaging.getInstance().subscribeToTopic(SquawkContract.CEZANNE_KEY);
-                    break;
-                case 2:
-                    FirebaseMessaging.getInstance().subscribeToTopic(SquawkContract.JLIN_KEY);
-                    break;
-                case 3:
-                    FirebaseMessaging.getInstance().subscribeToTopic(SquawkContract.LYLA_KEY);
-                    break;
-                case 4:
-                    FirebaseMessaging.getInstance().subscribeToTopic(SquawkContract.NIKITA_KEY);
-                    break;
-            }
-        } else if (sharedPreferences.getBoolean(key, true)) {
-            switch (sharedPreferences.getInt(key, 0)) {
-                case 0:
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(SquawkContract.ASSER_KEY);
-                    break;
-                case 1:
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(SquawkContract.CEZANNE_KEY);
-                    break;
-                case 2:
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(SquawkContract.JLIN_KEY);
-                    break;
-                case 3:
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(SquawkContract.LYLA_KEY);
-                    break;
-                case 4:
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(SquawkContract.NIKITA_KEY);
-                    break;
-            }
+        Preference preference = findPreference(key);
+        if (preference != null && preference instanceof SwitchPreferenceCompat) {
+            boolean isOn = sharedPreferences.getBoolean(key, false);
 
+            if (isOn) {
+                FirebaseMessaging.getInstance().subscribeToTopic(key);
+                Log.d(LOG_TAG, "Subscribing to: " + key);
+            } else {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(key);
+                Log.d(LOG_TAG, "Un-Subscribing to: " + key);
+            }
         }
     }
 
@@ -103,14 +76,14 @@ public class FollowingPreferenceFragment extends PreferenceFragmentCompat implem
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
 }
