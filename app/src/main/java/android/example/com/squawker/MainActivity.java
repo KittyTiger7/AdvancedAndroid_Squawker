@@ -110,7 +110,9 @@ public class MainActivity extends AppCompatActivity implements
 
         // TODO (5) You can delete the code below for getting the extras from a notification message,
         // since this was for testing purposes and not part of Squawker.
-        
+
+
+
         // Gets the extra data from the intent that started the activity. For *notification*
         // messages, this will contain key value pairs stored in the *data* section of the message.
         Bundle extras = getIntent().getExtras();
@@ -125,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements
         String token = FirebaseInstanceId.getInstance().getToken();
         String msg = getString(R.string.message_token_format, token);
         Log.d(LOG_TAG, msg);
+
 
     }
 
